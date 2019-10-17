@@ -1,6 +1,5 @@
 import React from 'react';
-import image from '../src/images/house-location-pin.svg'
-import './scss/app.scss';
+import image from '../images/house-location-pin.svg'
 
 class App extends React.Component {
 

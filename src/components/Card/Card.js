@@ -9,8 +9,6 @@ const Card = ({ property, activeProperty }) => {
     carSpaces,
     city,
     index,
-    latitude,
-    longitude,
     picture,
     price,
   } = property;
@@ -24,7 +22,7 @@ const Card = ({ property, activeProperty }) => {
       <img src={picture} alt={city} />
       <p className="price">{price}</p>
       <div className="details">
-        <span className="index">1</span>
+        <span className="index">{index + 1}</span>
         <p className="location">
           {city}
           <br />

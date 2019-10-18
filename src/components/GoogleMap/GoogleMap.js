@@ -15,10 +15,17 @@ class GoogleMap extends React.Component {
   }
 
   createMarkers = properties => {
-    const { setActiveProperty } = this.props;
+    const { setActiveProperty, activeProperty } = this.props;
+    const { index: activeIndex } = activeProperty;
+    const { markers } = this.state;
 
     properties.forEach(property => {
-      const { latitude: lat, longitude: lng, index } = property;
+      const {
+        latitude: lat,
+        longitude: lng,
+        index,
+        address,
+      } = property;
 
       this.marker = new google.maps.Marker({
         position: { lat, lng },
@@ -36,10 +43,20 @@ class GoogleMap extends React.Component {
         map: this.map,
       });
 
+      const infoWindow = new google.maps.InfoWindow({
+        content: `<h1>${address}</h1>`,
+      });
+
+      this.marker.iw = infoWindow;
+
       this.marker.addListener('click', () => {
         setActiveProperty(property);
       });
+
+      markers.push(this.marker);
     });
+
+    markers[activeIndex].iw.open(this.map, markers[activeIndex]);
   };
 
   componentDidMount() {

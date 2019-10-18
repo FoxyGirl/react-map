@@ -50,6 +50,10 @@ class GoogleMap extends React.Component {
       this.marker.iw = infoWindow;
 
       this.marker.addListener('click', () => {
+        markers.forEach(marker => {
+          marker.iw.close();
+        });
+
         setActiveProperty(property);
       });
 
@@ -57,6 +61,9 @@ class GoogleMap extends React.Component {
     });
 
     markers[activeIndex].iw.open(this.map, markers[activeIndex]);
+    this.setState({
+      markers,
+    });
   };
 
   componentDidMount() {

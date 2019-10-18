@@ -1,10 +1,13 @@
 import React from 'react';
+import jump from 'jump.js';
+
 import Card from '../Card';
 import GoogleMap from '../GoogleMap';
 import image from '../../images/house-location-pin.svg';
 import '../../scss/app.scss';
 
 import data from '../../js/data/Data';
+import { easeInOutCubic } from '../../js/utils/Easing';
 // import './App.scss'
 
 class App extends React.Component {
@@ -20,6 +23,12 @@ class App extends React.Component {
   setActiveProperty = property => {
     this.setState({
       activeProperty: property,
+    });
+
+    const target = `#card-${property.index}`;
+    jump(target, {
+      duration: 800,
+      easing: easeInOutCubic,
     });
   };
 

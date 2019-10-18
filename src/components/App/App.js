@@ -1,9 +1,13 @@
 import React from 'react';
+import jump from 'jump.js';
+
 import Card from '../Card';
+import GoogleMap from '../GoogleMap';
 import image from '../../images/house-location-pin.svg';
 import '../../scss/app.scss';
 
 import data from '../../js/data/Data';
+import { easeInOutCubic } from '../../js/utils/Easing';
 // import './App.scss'
 
 class App extends React.Component {
@@ -15,6 +19,20 @@ class App extends React.Component {
       activeProperty: data.properties[0],
     };
   }
+
+  setActiveProperty = (property, scroll) => {
+    this.setState({
+      activeProperty: property,
+    });
+
+    if (scroll) {
+      const target = `#card-${property.index}`;
+      jump(target, {
+        duration: 800,
+        easing: easeInOutCubic,
+      });
+    }
+  };
 
   render() {
     const { properties, activeProperty } = this.state;
@@ -107,6 +125,7 @@ class App extends React.Component {
                   key={property._id}
                   property={property}
                   activeProperty={activeProperty}
+                  setActiveProperty={this.setActiveProperty}
                 />
               ))}
             </div>
@@ -114,11 +133,11 @@ class App extends React.Component {
         </div>
         {/* listings - End */}
 
-        {/* mapContainer - Start */}
-        <div className="mapContainer">
-          <div id="map"></div>
-        </div>
-        {/* mapContainer - End */}
+        <GoogleMap
+          properties={properties}
+          activeProperty={activeProperty}
+          setActiveProperty={this.setActiveProperty}
+        />
       </div>
     );
   }

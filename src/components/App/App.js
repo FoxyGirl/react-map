@@ -17,6 +17,12 @@ class App extends React.Component {
     };
   }
 
+  setActiveProperty = property => {
+    this.setState({
+      activeProperty: property,
+    });
+  };
+
   render() {
     const { properties, activeProperty } = this.state;
 
@@ -118,6 +124,7 @@ class App extends React.Component {
         <GoogleMap
           properties={properties}
           activeProperty={activeProperty}
+          setActiveProperty={this.setActiveProperty}
         />
       </div>
     );

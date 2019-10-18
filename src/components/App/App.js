@@ -103,7 +103,11 @@ class App extends React.Component {
           <div className="cards container">
             <div className="cards-list row ">
               {properties.map(property => (
-                <Card property={property} />
+                <Card
+                  key={property._id}
+                  property={property}
+                  activeProperty={activeProperty}
+                />
               ))}
             </div>
           </div>

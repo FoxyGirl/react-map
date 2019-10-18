@@ -50,19 +50,30 @@ class GoogleMap extends React.Component {
       this.marker.iw = infoWindow;
 
       this.marker.addListener('click', () => {
-        markers.forEach(marker => {
-          marker.iw.close();
-        });
-
+        this.hideAll_IW();
         setActiveProperty(property, true);
       });
 
       markers.push(this.marker);
     });
 
-    markers[activeIndex].iw.open(this.map, markers[activeIndex]);
     this.setState({
       markers,
+    });
+
+    this.showIW(activeIndex);
+  };
+
+  showIW = index => {
+    const { markers } = this.state;
+    markers[index].iw.open(this.map, markers[index]);
+  };
+
+  hideAll_IW = () => {
+    const { markers } = this.state;
+
+    markers.forEach(marker => {
+      marker.iw.close();
     });
   };
 
@@ -71,13 +82,8 @@ class GoogleMap extends React.Component {
     const { index: activeIndex } = this.props.activeProperty;
 
     if (prevIndex !== activeIndex) {
-      const { markers } = this.state;
-
-      markers.forEach(marker => {
-        marker.iw.close();
-      });
-
-      markers[activeIndex].iw.open(this.map, markers[activeIndex]);
+      this.hideAll_IW();
+      this.showIW(activeIndex);
     }
   }
 

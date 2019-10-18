@@ -54,7 +54,7 @@ class GoogleMap extends React.Component {
           marker.iw.close();
         });
 
-        setActiveProperty(property);
+        setActiveProperty(property, true);
       });
 
       markers.push(this.marker);
@@ -94,6 +94,8 @@ class GoogleMap extends React.Component {
 
 GoogleMap.propTypes = {
   properties: PropTypes.array.isRequired,
+  activeProperty: PropTypes.object.isRequired,
+  setActiveProperty: PropTypes.func.isRequired,
 };
 
 export default GoogleMap;

@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-const Card = ({ property, activeProperty }) => {
+const Card = ({ property, activeProperty, setActiveProperty }) => {
   const {
     address,
     bathrooms,
@@ -18,6 +18,7 @@ const Card = ({ property, activeProperty }) => {
       id={`card-${index}`}
       className={`card col-sm-12 col-md-6 col-lg-4 ${property ===
         activeProperty && 'is-active'}`}
+      onClick={() => setActiveProperty(property, false)}
     >
       <img src={picture} alt={city} />
       <p className="price">{price}</p>
@@ -50,6 +51,7 @@ const Card = ({ property, activeProperty }) => {
 Card.propTypes = {
   property: PropTypes.object.isRequired,
   activeProperty: PropTypes.object.isRequired,
+  setActiveProperty: PropTypes.func.isRequired,
 };
 
 export default Card;

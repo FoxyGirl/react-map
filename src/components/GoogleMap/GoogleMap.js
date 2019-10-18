@@ -115,8 +115,10 @@ class GoogleMap extends React.Component {
 
 GoogleMap.propTypes = {
   properties: PropTypes.array.isRequired,
+  filteredProperties: PropTypes.array.isRequired,
   activeProperty: PropTypes.object.isRequired,
   setActiveProperty: PropTypes.func.isRequired,
+  isFiltering: PropTypes.bool.isRequired,
 };
 
 export default GoogleMap;

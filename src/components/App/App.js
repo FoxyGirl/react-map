@@ -10,14 +10,19 @@ import data from '../../js/data/Data';
 import { easeInOutCubic } from '../../js/utils/Easing';
 // import './App.scss'
 
+const initialFilterVal = 'any';
+
 class App extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
       properties: data.properties,
+      filteredProperties: [],
       activeProperty: data.properties[0],
       isFilterVisible: false,
+      filterBedrooms: initialFilterVal,
+      isFiltering: false,
     };
   }
 
@@ -26,6 +31,34 @@ class App extends React.Component {
     this.setState(state => ({
       isFilterVisible: !state.isFilterVisible,
     }));
+  };
+
+  filterProperties = () => {
+    const { properties, filterBedrooms } = this.state;
+    const isFiltering =
+      filterBedrooms.toLowerCase() !== initialFilterVal;
+
+    const filteredProperties =
+      filterBedrooms.toLowerCase() === initialFilterVal
+        ? properties
+        : properties.filter(
+            ({ bedrooms }) => bedrooms === parseInt(filterBedrooms),
+          );
+
+    this.setState({
+      filteredProperties,
+      isFiltering,
+      activeProperty: filteredProperties[0],
+    });
+  };
+
+  handleFilterChange = e => {
+    const { target } = e;
+    const { value, name } = target;
+
+    this.setState({ [name]: value }, () => {
+      this.filterProperties();
+    });
   };
 
   setActiveProperty = (property, scroll) => {
@@ -45,9 +78,15 @@ class App extends React.Component {
   render() {
     const {
       properties,
+      filteredProperties,
       activeProperty,
       isFilterVisible,
+      isFiltering,
     } = this.state;
+
+    const propertiesList = isFiltering
+      ? filteredProperties
+      : properties;
 
     return (
       <div>
@@ -56,11 +95,12 @@ class App extends React.Component {
           <Header
             isFilterVisible={isFilterVisible}
             toggleFilter={this.toggleFilter}
+            handleFilterChange={this.handleFilterChange}
           />
 
           <div className="cards container">
             <div className="cards-list row ">
-              {properties.map(property => (
+              {propertiesList.map(property => (
                 <Card
                   key={property._id}
                   property={property}
@@ -74,9 +114,13 @@ class App extends React.Component {
         {/* listings - End */}
 
         <GoogleMap
-          properties={properties}
+          // propertiesList={propertiesList}
+          // properties={properties}
+          properties={propertiesList}
+          filteredProperties={filteredProperties}
           activeProperty={activeProperty}
           setActiveProperty={this.setActiveProperty}
+          isFiltering={isFiltering}
         />
       </div>
     );

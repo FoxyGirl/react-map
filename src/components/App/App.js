@@ -1,5 +1,6 @@
 import React from 'react';
 import Card from '../Card';
+import GoogleMap from '../GoogleMap';
 import image from '../../images/house-location-pin.svg';
 import '../../scss/app.scss';
 
@@ -114,11 +115,10 @@ class App extends React.Component {
         </div>
         {/* listings - End */}
 
-        {/* mapContainer - Start */}
-        <div className="mapContainer">
-          <div id="map"></div>
-        </div>
-        {/* mapContainer - End */}
+        <GoogleMap
+          properties={properties}
+          activeProperty={activeProperty}
+        />
       </div>
     );
   }

@@ -1,14 +1,17 @@
 import React from 'react';
 import jump from 'jump.js';
 
+import Header from '../Header';
 import Card from '../Card';
 import GoogleMap from '../GoogleMap';
-import image from '../../images/house-location-pin.svg';
 import '../../scss/app.scss';
 
 import data from '../../js/data/Data';
 import { easeInOutCubic } from '../../js/utils/Easing';
+import image from '../../images/location-map.svg';
 // import './App.scss'
+
+const initialFilterVal = 'any';
 
 class App extends React.Component {
   constructor(props) {
@@ -16,9 +19,113 @@ class App extends React.Component {
 
     this.state = {
       properties: data.properties,
+      filteredProperties: [],
       activeProperty: data.properties[0],
+      isFilterVisible: false,
+      filterBedrooms: initialFilterVal,
+      filterBathrooms: initialFilterVal,
+      filterCars: initialFilterVal,
+      filterSort: initialFilterVal,
+      priceFrom: initialFilterVal,
+      priceTo: initialFilterVal,
+      isFiltering: false,
     };
   }
+
+  toggleFilter = e => {
+    e.preventDefault();
+    this.setState(state => ({
+      isFilterVisible: !state.isFilterVisible,
+    }));
+  };
+
+  filterProperties = () => {
+    const {
+      properties,
+      filterBedrooms,
+      filterBathrooms,
+      filterCars,
+      filterSort,
+      priceFrom,
+      priceTo,
+    } = this.state;
+
+    const isFiltering =
+      filterBedrooms !== initialFilterVal ||
+      filterBathrooms !== initialFilterVal ||
+      filterCars !== initialFilterVal ||
+      filterSort !== initialFilterVal ||
+      priceFrom !== initialFilterVal ||
+      priceTo !== initialFilterVal;
+
+    const filteredProperties = !isFiltering
+      ? properties
+      : properties.filter(
+          ({ bedrooms, bathrooms, carSpaces, price }) =>
+            (filterBedrooms === initialFilterVal ||
+              bedrooms === parseInt(filterBedrooms)) &&
+            (filterBathrooms === initialFilterVal ||
+              bathrooms === parseInt(filterBathrooms)) &&
+            (filterCars === initialFilterVal ||
+              carSpaces === parseInt(filterCars)) &&
+            (priceFrom === initialFilterVal ||
+              price >= parseInt(priceFrom)) &&
+            (priceTo === initialFilterVal ||
+              price <= parseInt(priceTo)),
+        );
+
+    const sortedProperties =
+      filterSort !== initialFilterVal
+        ? this.sortByPrice(filteredProperties, filterSort)
+        : filteredProperties;
+
+    this.setState({
+      filteredProperties: sortedProperties,
+      isFiltering,
+      activeProperty: sortedProperties[0] || properties[0],
+    });
+  };
+
+  sortByPrice = (arr, filter) => {
+    let sortedArr = [...arr];
+    switch (filter) {
+      case '0':
+        sortedArr.sort((a, b) => a.price - b.price);
+        break;
+      case '1':
+        sortedArr.sort((a, b) => b.price - a.price);
+        break;
+      default:
+        break;
+    }
+
+    return sortedArr;
+  };
+
+  handleFilterChange = e => {
+    const { target } = e;
+    const { value, name } = target;
+
+    this.setState({ [name]: value }, () => {
+      this.filterProperties();
+    });
+  };
+
+  clearFilters = (e, form) => {
+    e.preventDefault();
+
+    this.setState({
+      filterBedrooms: initialFilterVal,
+      filterBathrooms: initialFilterVal,
+      filterCars: initialFilterVal,
+      filterSort: initialFilterVal,
+      priceFrom: initialFilterVal,
+      priceTo: initialFilterVal,
+      isFiltering: false,
+      activeProperty: data.properties[0],
+    });
+    form.reset();
+  };
 
   setActiveProperty = (property, scroll) => {
     this.setState({
@@ -35,106 +142,58 @@ class App extends React.Component {
   };
 
   render() {
-    const { properties, activeProperty } = this.state;
+    const {
+      properties,
+      filteredProperties,
+      activeProperty,
+      isFilterVisible,
+      isFiltering,
+    } = this.state;
+
+    const propertiesList = isFiltering
+      ? filteredProperties
+      : properties;
 
     return (
       <div>
         {/* listings - Start */}
         <div className="listings">
-          {/* Header - Start - add .filter-is-visible to show filter*/}
-          <header className="">
-            {/* Filter - Start */}
-            <form className="filter">
-              <div className="filterBox">
-                <label htmlFor="filterBedrooms">Bedrooms</label>
-                <select id="filterBedrooms" name="filterBedrooms">
-                  <option value="any">Any</option>
-                  <option value="1">1</option>
-                  <option value="2">2</option>
-                  <option value="3">3</option>
-                </select>
-              </div>
-              <div className="filterBox">
-                <label htmlFor="filterBathrooms">Bathrooms</label>
-                <select id="filterBathrooms" name="filterBathrooms">
-                  <option value="any">Any</option>
-                  <option value="1">1</option>
-                  <option value="2">2</option>
-                </select>
-              </div>
-              <div className="filterBox">
-                <label htmlFor="filterCars">Car Spaces</label>
-                <select id="filterCars" name="filterCars">
-                  <option value="any">Any</option>
-                  <option value="0">0</option>
-                  <option value="1">1</option>
-                  <option value="2">2</option>
-                </select>
-              </div>
-              <div className="filterBox filterFrom">
-                <label htmlFor="priceFrom">Min Price</label>
-                <select id="priceFrom" name="priceFrom">
-                  <option value="0">Any</option>
-                  <option value="500000">{500000}</option>
-                  <option value="600000">{600000}</option>
-                  <option value="700000">{700000}</option>
-                  <option value="800000">{800000}</option>
-                  <option value="900000">{900000}</option>
-                </select>
-              </div>
-              <div className="filterBox">
-                <label htmlFor="priceTo">Max Price</label>
-                <select id="priceTo" name="priceTo">
-                  <option value="1000001">Any</option>
-                  <option value="600000">{600000}</option>
-                  <option value="700000">{700000}</option>
-                  <option value="800000">{800000}</option>
-                  <option value="900000">{900000}</option>
-                  <option value="1000000">{1000000}</option>
-                </select>
-              </div>
-              <div className="filterBox">
-                <label htmlFor="filterSort">Order by</label>
-                <select id="filterSort" name="filterSort">
-                  <option value="any">Default</option>
-                  <option value="0">Price: - Low to High</option>
-                  <option value="1">Price: - High to Low</option>
-                </select>
-              </div>
-              <div className="filterBox">
-                <label>&nbsp;</label>
-                <button className="btn-clear">Clear</button>
-              </div>
-              <button className="btn-filter">
-                <strong>X</strong>
-                <span>Close</span>
-              </button>
-            </form>
-            {/* Filter - End */}
-
-            <img src={image} />
-            <h1>Property Listings</h1>
-            <button className="btn-filter">Filter</button>
-          </header>
-          {/* Header - End */}
+          <Header
+            isFilterVisible={isFilterVisible}
+            toggleFilter={this.toggleFilter}
+            handleFilterChange={this.handleFilterChange}
+            clearFilters={this.clearFilters}
+          />
 
           <div className="cards container">
-            <div className="cards-list row ">
-              {properties.map(property => (
-                <Card
-                  key={property._id}
-                  property={property}
-                  activeProperty={activeProperty}
-                  setActiveProperty={this.setActiveProperty}
-                />
-              ))}
+            <div
+              className={`cards-list row ${
+                propertiesList.length === 0 ? 'is-empty' : ''
+              }`}
+            >
+              {propertiesList.length > 0 ? (
+                propertiesList.map(property => (
+                  <Card
+                    key={property._id}
+                    property={property}
+                    activeProperty={activeProperty}
+                    setActiveProperty={this.setActiveProperty}
+                  />
+                ))
+              ) : (
+                <div className="alert alert-danger container-fluid text-center">
+                  <img src={image} width={100} alt="location-map" />
+                  <p className="warning">No properties were found</p>
+                </div>
+              )}
             </div>
           </div>
         </div>
         {/* listings - End */}
 
         <GoogleMap
-          properties={properties}
+          properties={propertiesList}
+          // properties={properties}
           activeProperty={activeProperty}
           setActiveProperty={this.setActiveProperty}
         />

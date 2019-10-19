@@ -26,6 +26,8 @@ class App extends React.Component {
       filterBathrooms: initialFilterVal,
       filterCars: initialFilterVal,
       filterSort: initialFilterVal,
+      priceFrom: initialFilterVal,
+      priceTo: initialFilterVal,
       isFiltering: false,
     };
   }
@@ -44,23 +46,32 @@ class App extends React.Component {
       filterBathrooms,
       filterCars,
       filterSort,
+      priceFrom,
+      priceTo,
     } = this.state;
+
     const isFiltering =
       filterBedrooms !== initialFilterVal ||
       filterBathrooms !== initialFilterVal ||
       filterCars !== initialFilterVal ||
-      filterSort !== initialFilterVal;
+      filterSort !== initialFilterVal ||
+      priceFrom !== initialFilterVal ||
+      priceTo !== initialFilterVal;
 
     const filteredProperties = !isFiltering
       ? properties
       : properties.filter(
-          ({ bedrooms, bathrooms, carSpaces }) =>
+          ({ bedrooms, bathrooms, carSpaces, price }) =>
             (filterBedrooms === initialFilterVal ||
               bedrooms === parseInt(filterBedrooms)) &&
             (filterBathrooms === initialFilterVal ||
               bathrooms === parseInt(filterBathrooms)) &&
             (filterCars === initialFilterVal ||
-              carSpaces === parseInt(filterCars)),
+              carSpaces === parseInt(filterCars)) &&
+            (priceFrom === initialFilterVal ||
+              price >= parseInt(priceFrom)) &&
+            (priceTo === initialFilterVal ||
+              price <= parseInt(priceTo)),
         );
 
     const sortedProperties =
@@ -108,6 +119,8 @@ class App extends React.Component {
       filterBathrooms: initialFilterVal,
       filterCars: initialFilterVal,
       filterSort: initialFilterVal,
+      priceFrom: initialFilterVal,
+      priceTo: initialFilterVal,
       isFiltering: false,
       activeProperty: data.properties[0],
     });

@@ -8,6 +8,7 @@ import '../../scss/app.scss';
 
 import data from '../../js/data/Data';
 import { easeInOutCubic } from '../../js/utils/Easing';
+import image from '../../images/location-map.svg';
 // import './App.scss'
 
 const initialFilterVal = 'any';
@@ -62,7 +63,7 @@ class App extends React.Component {
     this.setState({
       filteredProperties,
       isFiltering,
-      activeProperty: filteredProperties[0],
+      activeProperty: filteredProperties[0] || properties[0],
     });
   };
 
@@ -127,15 +128,26 @@ class App extends React.Component {
           />
 
           <div className="cards container">
-            <div className="cards-list row ">
-              {propertiesList.map(property => (
-                <Card
-                  key={property._id}
-                  property={property}
-                  activeProperty={activeProperty}
-                  setActiveProperty={this.setActiveProperty}
-                />
-              ))}
+            <div
+              className={`cards-list row ${
+                propertiesList.length === 0 ? 'is-empty' : ''
+              }`}
+            >
+              {propertiesList.length > 0 ? (
+                propertiesList.map(property => (
+                  <Card
+                    key={property._id}
+                    property={property}
+                    activeProperty={activeProperty}
+                    setActiveProperty={this.setActiveProperty}
+                  />
+                ))
+              ) : (
+                <div className="alert alert-danger container-fluid text-center">
+                  <img src={image} width={100} alt="location-map" />
+                  <p className="warning">No properties were found</p>
+                </div>
+              )}
             </div>
           </div>
         </div>

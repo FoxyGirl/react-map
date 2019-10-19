@@ -41,6 +41,7 @@ class GoogleMap extends React.Component {
           anchor: new google.maps.Point(11, 52),
         },
         map: this.map,
+        property,
       });
 
       const infoWindow = new google.maps.InfoWindow({
@@ -77,13 +78,28 @@ class GoogleMap extends React.Component {
     });
   };
 
-  componentDidUpdate(nextProps) {
-    const { index: prevIndex } = nextProps.activeProperty;
+  componentDidUpdate(prevProps) {
+    const { index: prevIndex } = prevProps.activeProperty;
     const { index: activeIndex } = this.props.activeProperty;
+    const { properties: prevProperties } = prevProps;
+    const { properties } = this.props;
+    const { markers } = this.state;
 
     if (prevIndex !== activeIndex) {
       this.hideAll_IW();
       this.showIW(activeIndex);
+    }
+
+    if (prevProperties !== properties) {
+      markers.forEach(marker => {
+        const { property } = marker;
+
+        if (properties.includes(property)) {
+          markers[property.index].setVisible(true);
+        } else {
+          markers[property.index].setVisible(false);
+        }
+      });
     }
   }
 
@@ -115,10 +131,8 @@ class GoogleMap extends React.Component {
 
 GoogleMap.propTypes = {
   properties: PropTypes.array.isRequired,
-  filteredProperties: PropTypes.array.isRequired,
   activeProperty: PropTypes.object.isRequired,
   setActiveProperty: PropTypes.func.isRequired,
-  isFiltering: PropTypes.bool.isRequired,
 };
 
 export default GoogleMap;

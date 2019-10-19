@@ -114,13 +114,10 @@ class App extends React.Component {
         {/* listings - End */}
 
         <GoogleMap
-          // propertiesList={propertiesList}
-          // properties={properties}
           properties={propertiesList}
-          filteredProperties={filteredProperties}
+          // properties={properties}
           activeProperty={activeProperty}
           setActiveProperty={this.setActiveProperty}
-          isFiltering={isFiltering}
         />
       </div>
     );

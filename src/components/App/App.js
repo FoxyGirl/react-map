@@ -22,6 +22,8 @@ class App extends React.Component {
       activeProperty: data.properties[0],
       isFilterVisible: false,
       filterBedrooms: initialFilterVal,
+      filterBathrooms: initialFilterVal,
+      filterCars: initialFilterVal,
       isFiltering: false,
     };
   }
@@ -34,16 +36,28 @@ class App extends React.Component {
   };
 
   filterProperties = () => {
-    const { properties, filterBedrooms } = this.state;
+    const {
+      properties,
+      filterBedrooms,
+      filterBathrooms,
+      filterCars,
+    } = this.state;
     const isFiltering =
-      filterBedrooms.toLowerCase() !== initialFilterVal;
+      filterBedrooms !== initialFilterVal ||
+      filterBathrooms !== initialFilterVal ||
+      filterCars !== initialFilterVal;
 
-    const filteredProperties =
-      filterBedrooms.toLowerCase() === initialFilterVal
-        ? properties
-        : properties.filter(
-            ({ bedrooms }) => bedrooms === parseInt(filterBedrooms),
-          );
+    const filteredProperties = !isFiltering
+      ? properties
+      : properties.filter(
+          ({ bedrooms, bathrooms, carSpaces }) =>
+            (filterBedrooms === initialFilterVal ||
+              bedrooms === parseInt(filterBedrooms)) &&
+            (filterBathrooms === initialFilterVal ||
+              bathrooms === parseInt(filterBathrooms)) &&
+            (filterCars === initialFilterVal ||
+              carSpaces === parseInt(filterCars)),
+        );
 
     this.setState({
       filteredProperties,

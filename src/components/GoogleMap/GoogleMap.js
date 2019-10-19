@@ -83,20 +83,16 @@ class GoogleMap extends React.Component {
     const { properties } = this.props;
     const { markers } = this.state;
 
-    if (properties.length === 0) {
-      markers.forEach(marker => {
-        marker.setVisible(false);
-      });
-      this.hideAll_IW();
-      return;
-    }
-
     const { index: prevIndex } = prevProps.activeProperty;
     const { index: activeIndex } = this.props.activeProperty;
 
     if (prevIndex !== activeIndex) {
-      this.hideAll_IW();
-      this.showIW(activeIndex);
+      if (properties.length === 0) {
+        this.hideAll_IW();
+      } else {
+        this.hideAll_IW();
+        this.showIW(activeIndex);
+      }
     }
 
     if (prevProperties !== properties) {

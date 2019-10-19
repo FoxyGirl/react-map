@@ -2,11 +2,17 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 class Filter extends React.Component {
+  formRef = React.createRef();
+
   render() {
-    const { toggleFilter, handleFilterChange } = this.props;
+    const {
+      toggleFilter,
+      handleFilterChange,
+      clearFilters,
+    } = this.props;
 
     return (
-      <form className="filter">
+      <form className="filter" ref={this.formRef}>
         <div className="filterBox">
           <label htmlFor="filterBedrooms">Bedrooms</label>
           <select
@@ -77,7 +83,12 @@ class Filter extends React.Component {
         </div>
         <div className="filterBox">
           <label>&nbsp;</label>
-          <button className="btn-clear">Clear</button>
+          <button
+            className="btn-clear"
+            onClick={e => clearFilters(e, this.formRef.current)}
+          >
+            Clear
+          </button>
         </div>
         <button className="btn-filter" onClick={e => toggleFilter(e)}>
           <strong>X</strong>
@@ -91,6 +102,7 @@ class Filter extends React.Component {
 Filter.propTypes = {
   toggleFilter: PropTypes.func.isRequired,
   handleFilterChange: PropTypes.func.isRequired,
+  clearFilters: PropTypes.func.isRequired,
 };
 
 export default Filter;

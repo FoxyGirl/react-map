@@ -8,12 +8,14 @@ const Header = ({
   isFilterVisible,
   toggleFilter,
   handleFilterChange,
+  clearFilters,
 }) => {
   return (
     <header className={isFilterVisible ? 'filter-is-visible' : ''}>
       <Filter
         toggleFilter={toggleFilter}
         handleFilterChange={handleFilterChange}
+        clearFilters={clearFilters}
       />
       <img src={image} />
       <h1>Property Listings</h1>
@@ -28,6 +30,7 @@ Header.propTypes = {
   isFilterVisible: PropTypes.bool.isRequired,
   toggleFilter: PropTypes.func.isRequired,
   handleFilterChange: PropTypes.func.isRequired,
+  clearFilters: PropTypes.func.isRequired,
 };
 
 export default Header;

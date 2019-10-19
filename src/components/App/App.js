@@ -75,6 +75,19 @@ class App extends React.Component {
     });
   };
 
+  clearFilters = (e, form) => {
+    e.preventDefault();
+
+    this.setState({
+      filterBedrooms: initialFilterVal,
+      filterBathrooms: initialFilterVal,
+      filterCars: initialFilterVal,
+      isFiltering: false,
+      activeProperty: data.properties[0],
+    });
+    form.reset();
+  };
+
   setActiveProperty = (property, scroll) => {
     this.setState({
       activeProperty: property,
@@ -110,6 +123,7 @@ class App extends React.Component {
             isFilterVisible={isFilterVisible}
             toggleFilter={this.toggleFilter}
             handleFilterChange={this.handleFilterChange}
+            clearFilters={this.clearFilters}
           />
 
           <div className="cards container">

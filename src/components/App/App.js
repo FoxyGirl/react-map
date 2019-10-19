@@ -25,6 +25,7 @@ class App extends React.Component {
       filterBedrooms: initialFilterVal,
       filterBathrooms: initialFilterVal,
       filterCars: initialFilterVal,
+      filterSort: initialFilterVal,
       isFiltering: false,
     };
   }
@@ -42,11 +43,13 @@ class App extends React.Component {
       filterBedrooms,
       filterBathrooms,
       filterCars,
+      filterSort,
     } = this.state;
     const isFiltering =
       filterBedrooms !== initialFilterVal ||
       filterBathrooms !== initialFilterVal ||
-      filterCars !== initialFilterVal;
+      filterCars !== initialFilterVal ||
+      filterSort !== initialFilterVal;
 
     const filteredProperties = !isFiltering
       ? properties
@@ -60,11 +63,32 @@ class App extends React.Component {
               carSpaces === parseInt(filterCars)),
         );
 
+    const sortedProperties =
+      filterSort !== initialFilterVal
+        ? this.sortByPrice(filteredProperties, filterSort)
+        : filteredProperties;
+
     this.setState({
-      filteredProperties,
+      filteredProperties: sortedProperties,
       isFiltering,
-      activeProperty: filteredProperties[0] || properties[0],
+      activeProperty: sortedProperties[0] || properties[0],
     });
+  };
+
+  sortByPrice = (arr, filter) => {
+    let sortedArr = [...arr];
+    switch (filter) {
+      case '0':
+        sortedArr.sort((a, b) => a.price - b.price);
+        break;
+      case '1':
+        sortedArr.sort((a, b) => b.price - a.price);
+        break;
+      default:
+        break;
+    }
+
+    return sortedArr;
   };
 
   handleFilterChange = e => {
@@ -83,6 +107,7 @@ class App extends React.Component {
       filterBedrooms: initialFilterVal,
       filterBathrooms: initialFilterVal,
       filterCars: initialFilterVal,
+      filterSort: initialFilterVal,
       isFiltering: false,
       activeProperty: data.properties[0],
     });
